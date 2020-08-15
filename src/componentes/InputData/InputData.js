@@ -85,6 +85,7 @@ function InputData() {
         RecencyCluster: recencyCluster,
         FrequencyCluster: frequencyCluster,
         RevenueCluster: revenueCluster,
+        predictionVal: predictionOp,
       }),
     })
       .then((response) => response.json())

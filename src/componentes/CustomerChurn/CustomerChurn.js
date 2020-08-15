@@ -3,6 +3,9 @@ import ClvCard from "../ClvCard/ClvCard";
 import { baseUrl } from "../../constants";
 import { FormControl, Select, MenuItem, Button } from "@material-ui/core";
 import "./CustomerChurn.css";
+import CloseIcon from "@material-ui/icons/Close";
+import Alert from "@material-ui/lab/Alert";
+import IconButton from "@material-ui/core/IconButton";
 
 function CustomerChurn() {
   const [users, setUsers] = useState([]);
@@ -12,6 +15,7 @@ function CustomerChurn() {
   const [churnRate, setChurnRate] = useState();
   const [clv, setClv] = useState();
   const [custLife, setCustLife] = useState();
+  const [mailSent, setMailSent] = useState();
 
   useEffect(() => {
     async function getUsers() {
@@ -39,6 +43,8 @@ function CustomerChurn() {
 
   const userSelectChange = (e) => {
     setSelectedUser(e.target.value);
+    setCustLife();
+    setClv();
   };
 
   useEffect(() => {
@@ -52,6 +58,15 @@ function CustomerChurn() {
     }
     getUserData();
   }, [selectedUser]);
+
+  const sendPromotionalCode = () => {
+    fetch(baseUrl + "/sendPromotional")
+      .then((response) => response.json)
+      .then((data) => {
+        setMailSent(1);
+      });
+  };
+
   return (
     <div>
       <h1>Customer Lifetime Value</h1>
@@ -75,9 +90,47 @@ function CustomerChurn() {
       <h4>
         CLV : <p>{clv}</p>
       </h4>
-      <h4>
-        Customer Lifetime Value : <p>{custLife}</p>
-      </h4>
+
+      {custLife && custLife == 0 ? (
+        <p>Customer Should be removed from promotional pool.</p>
+      ) : (
+        [
+          custLife == 1 ? (
+            <div>
+              <p>Customer should be offered a new promotional code.</p>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => sendPromotionalCode()}
+              >
+                Send Promotional Code
+              </Button>
+            </div>
+          ) : (
+            ""
+          ),
+        ]
+      )}
+      {mailSent && mailSent == 1 ? (
+        <Alert
+          action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+                setMailSent(0);
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+        >
+          Mail Sent!
+        </Alert>
+      ) : (
+        ""
+      )}
     </div>
   );
 }
