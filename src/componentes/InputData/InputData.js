@@ -75,7 +75,7 @@ function InputData() {
   };
 
   const sendMail = () => {
-    fetch(baseUrl + "/sendMail", {
+    fetch(baseUrl + "/sendFlaskMail", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -121,7 +121,16 @@ function InputData() {
         </Button>
       )}
       {predictionOp == 0 ? (
-        <h3>Customer will purchase in more than 50 days</h3>
+        <div>
+          <h3>Customer will purchase in more than 50 days</h3>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => sendMail()}
+          >
+            Send Email
+          </Button>
+        </div>
       ) : (
         [
           predictionOp == 1 ? (
